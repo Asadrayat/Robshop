@@ -1,0 +1,100 @@
+{% assign product_information = product.metafields.custom.product_videos.value %}
+{% liquid
+  assign video = product_information.video.value
+  assign vide1 = product_information.video_1.value
+  assign video2 = product_information.video_2.value
+  assign video3 = product_information.video_3.value
+  assign video4 = product_information.video_4.value
+  assign text = product_information.text
+  assign text_1 = product_information.text_1
+  assign text_2 = product_information.text_2
+  assign text_3 = product_information.text_3
+%}
+<h2 class="--video-feed-title">{{ block.setting.title }}</h2>
+<div class="--video-feed-wrapper">
+  {% unless video == blank %}
+    <div class="--single-video_texy">
+      <div class="--single-video " data-title="robshop-video-1-{{ block.id }}">
+        {{ video | video_tag: autoplay: true, loop: true, muted: true, controls: false }}
+      </div>
+      <p>{{ text }}</p>
+    </div>
+  {% endunless %}
+
+  <div class="--video-modal-wrapper">
+    {% unless video == blank %}
+      <div class="--single-video-popup " data-title="robshop-video-1-{{ block.id }}">
+        {{ video | video_tag: autoplay: false, loop: true, muted: false, controls: false }}
+      </div>
+      <p>{{ text }}</p>
+    {% endunless %}
+  </div>
+</div>
+
+<script>
+     let videoitems = document.querySelectorAll(".--single-video");
+     let videopopupitems = document.querySelectorAll(".--single-video-popup");
+     let closevideoicons = document.querySelectorAll(".--close-video");
+     function videocontrol(videoitem){
+       videoitem.addEventListener('click',()=>{
+         if(videoitem.paused){
+           videoitem.play()
+         } else {
+           videoitem.pause()
+         }
+       })
+     }
+     function modalvideohandler(){
+       let modal_video = globalcontainer.querySelector('video')
+       if(modal_video){
+         modal_video.play();
+         videocontrol(modal_video)
+       }
+     }
+  // globalcontainer.addEventListener('click',()=>{
+  //      modalvideohandler()
+  //    });
+
+
+   videoitems.forEach((item) => {
+     item.addEventListener('click',()=>{
+       // item.classList.toggle('--popup-activated');
+       videopopupitems.forEach((checkitem) => {
+         // let popupvideo = checkitem.querySelector('video')
+         if(checkitem.dataset.title == item.dataset.title){
+           // checkitem.classList.add('--popup-activated');
+           // popupvideo.muted = !popupvideo.muted;
+           // popupvideo.play()
+           // videocontrol(popupvideo)
+           globalcontainer.innerHTML =  checkitem.innerHTML
+           globalcontainer.classList.add("maze-active-container");
+           document.body.style.overflow = "hidden";
+           // let popupvideo = globalcontainer.querySelector('video')
+           // popupvideo.play()
+           // videocontrol(popupvideo)
+           modalvideohandler()
+         } else {
+           // let popupvideo = globalcontainer.querySelector('video')
+           // checkitem.classList.remove('--popup-activated');
+           // if(popupvideo){
+           //   popupvideo.pause()
+           // }
+
+         }
+       });
+
+
+     closevideoicons.forEach((closeicon) => {
+       closeicon.addEventListener('click',(e)=>{
+         // document.this.parentElement.classList.remove('--popup-activated');
+         let parentdiv = e.target.parentElement;
+         let popupvideo = parentdiv.querySelector('video')
+         parentdiv.classList.remove('--popup-activated');
+         popupvideo.pause()
+       })
+     })
+
+
+     })
+   });
+</script>

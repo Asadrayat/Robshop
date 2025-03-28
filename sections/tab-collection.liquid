@@ -1,0 +1,357 @@
+{% liquid
+  assign id = section.id
+%}
+
+<style>
+    #shopify-section-{{id}} {
+      box-sizing: border-box;
+      margin-top: {{section.settings.margin_top | append: 'px'}};
+      margin-bottom: {{section.settings.margin_bottom | append: 'px'}};
+      padding-top: {{section.settings.padding_top | append: 'px'}};
+      padding-bottom: {{section.settings.padding_bottom | append: 'px'}};
+    }
+
+    @media(max-width: 768px) {
+      #shopify-section-{{id}} {
+        margin-top: {{section.settings.margin_top_m | append: 'px'}};
+        margin-bottom: {{section.settings.margin_bottom_m | append: 'px'}};
+        padding-top: {{section.settings.padding_top_m | append: 'px'}};
+        padding-bottom: {{section.settings.padding_bottom_m | append: 'px'}};
+      }
+      .tab__contents-{{ id }} .swiper-slide {
+        width:  auto;
+        margin-right: 24px;
+      }
+    }
+  .heading-{{ id }}{
+    margin: 0 0 32px;
+    text-align: center;
+    .title{
+      font-size: 48px;
+      line-height: 1;
+      color: #000;
+      text-transform: uppercase;
+      font-weight: 700;
+      text-align: center;
+      @media(max-width: 768px){
+        font-size: 36px;
+      }
+    }
+    @media screen and (max-width: 768px){
+      margin: 0 0 24px;
+    }
+  }
+  .tab__headers-{{ id }} {
+    border: solid 2px #000;
+    flex-wrap: wrap;
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 3px;
+    width: fit-content;
+    margin: 0 auto 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; */
+    gap: 20px;
+
+    @media screen and (max-width: 768px){
+      justify-content: start;
+    }
+  }
+
+  .tab__item-{{ id }} {
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: max-content;
+    position: relative;
+    text-align: center;
+    padding: 10px 30px;
+    @media screen and (max-width: 768px){
+
+    }
+  }
+  .tab__item-{{ id }}.active {
+    border-radius: 25px;
+    background-color: black;
+    color: #fff;
+    border: solid 2px;
+  }
+
+  .tab__contents-{{ id }}{
+    overflow: hidden;
+  }
+  .tab__contents-{{ id }} [data-tab-content] {
+    display: none;
+  }
+  .tab__contents-{{ id }} [data-tab-content].active {
+    display: flex;
+  }
+  .wrapper-{{ id }} .nav__btn {
+    background: rgb(255, 255, 255);
+    border: none;
+    border-radius: 50%;
+    color: rgb(41, 41, 41);
+    position: absolute;
+    box-shadow: rgba(0, 0, 0, 0.333) 2px 2px 10px;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .swiper-button-prev_ {
+    left: 8px;
+    transform: translateY(-50%);
+    top: 50%;
+  }
+  .swiper-button-next_ {
+    right: 8px;
+    transform: translateY(-50%);
+    top: 50%;
+  }
+  .swiper-button-next_.swiper-button-disabled, .swiper-button-prev_.swiper-button-disabled {
+    display: none;
+  }
+</style>
+
+<div class="sec-{{ id }}">
+  <div class="{% unless section.settings.full_width %}page-width page-width-full{% endunless %}">
+    <div class="wrapper-{{ id }}">
+      {% if section.settings.title != blank %}
+        <div class="heading-{{ id }}">
+          <h2 class="title">{{ section.settings.title }}</h2>
+        </div>
+      {% endif %}
+      {% if section.blocks.size > 0 %}
+        <div class="tabs-{{ id }}" id="new-feature_collection__tab">
+          <!-- Tab Headers -->
+          <div class="tab__headers-{{ id }}">
+            {% for block in section.blocks %}
+              <div
+                data-tab="{{ block.settings.collection.handle | escape }}"
+                class="tab__item-{{ id }} {% if forloop.first %}active{% endif %}"
+              >
+                {{ block.settings.collection.title }}
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Tab Contents -->
+          <div class="tab__contents-{{ id }}">
+            {% for block in section.blocks %}
+              <div
+                data-tab-content="{{ block.settings.collection.handle | escape }}"
+                class="swiper-{{ block.settings.collection.handle }}-{{ block.id }} {% if forloop.first %}active{% endif %}"
+              >
+                <div
+                  class="swiper contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %}"
+                >
+                  <div class="swiper-wrapper">
+                    {%- for product in block.settings.collection.products -%}
+                      <div
+                        class="swiper-slide {% comment %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}{% endcomment %}"
+                      >
+                        {%- render 'product-grid-item-v2',
+                          product: product,
+                          collection: collection,
+                          quick_shop_enable: settings.quick_shop_enable
+                        -%}
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <div
+                    class="swiper-button-next_ nav__btn"
+                    id="next-{{ block.settings.collection.handle }}-{{ block.id }}"
+                  >
+                    {% render 'all-icons', name: 'right_arrow' %}
+                  </div>
+                  <div
+                    class="swiper-button-prev_ nav__btn"
+                    id="prev--{{ block.settings.collection.handle }}-{{ block.id }}"
+                  >
+                    {% render 'all-icons', name: 'left_arrow' %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    {% for block in section.blocks %}
+      new Swiper('.swiper-{{ block.settings.collection.handle }}-{{ block.id }} .swiper', {
+        navigation: {
+          nextEl: "#next-{{ block.settings.collection.handle }}-{{ block.id }}",
+          prevEl: "#prev--{{ block.settings.collection.handle }}-{{ block.id }}",
+        },
+        slidesPerView: 1.5,
+        spaceBetween: 10,
+        freeMode: true,
+        preventClicks :true,
+        // a11y: false,
+        breakpoints: {
+            768: {
+              slidesPerView: 3.5,
+              spaceBetween: 10,
+            },
+          },
+      });
+    {% endfor %}
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  const tabHeaders = document.querySelectorAll('.tab__headers-{{ id }} .tab__item-{{ id }}');
+  const tabContents = document.querySelectorAll('.tab__contents-{{ id }} [data-tab-content]');
+
+  tabHeaders.forEach((header) => {
+    header.addEventListener('click', () => {
+      const targetTab = header.getAttribute('data-tab');
+
+      tabHeaders.forEach((h) => h.classList.remove('active'));
+      tabContents.forEach((c) => c.classList.remove('active'));
+
+      header.classList.add('active');
+      document.querySelector(`[data-tab-content="${targetTab}"]`).classList.add('active');
+    });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Tab Collections",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full Width Section",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing Desktop"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing Mobile"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_top_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tab Collections",
+      "blocks": [
+        {"type": "collection"},
+        {"type": "collection"},
+        {"type": "collection"},
+        {"type": "collection"},
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,9 @@
+{%- if section.settings.toolbar_menu != blank -%}
+  <ul class="inline-list toolbar__menu">
+    {%- for link in toolbar_menu.links -%}
+      <li>
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

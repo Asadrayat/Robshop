@@ -1,0 +1,266 @@
+{%- liquid
+  unless limit
+    assign limit = main_menu.links.size
+  endunless
+  unless offset
+    assign offset = 0
+  endunless
+-%}
+
+<ul
+  class="site-nav site-navigation small--hide"
+>
+  {%- for link in main_menu.links limit: limit offset: offset -%}
+    {%- liquid
+      assign has_dropdown = false
+      assign is_megamenu = false
+      if link.links != blank
+        assign has_dropdown = true
+        if link.levels > 1
+          assign is_megamenu = true
+        endif
+      endif
+    -%}
+
+    <li class="site-nav__item site-nav__expanded-item{% if has_dropdown %} site-nav--has-dropdown{% endif %}{% if is_megamenu %} site-nav--is-megamenu{% endif %}">
+      {% if is_megamenu or has_dropdown %}
+        <details
+          data-hover="{{ hover_menu }}"
+          id="site-nav-item--{{ forloop.index }}"
+          class="site-nav__details"
+        >
+          <summary
+            data-link="{{ link.url }}"
+            aria-expanded="false"
+            aria-controls="site-nav-item--{{ forloop.index }}"
+            class="site-nav__link site-nav__link--underline{% if has_dropdown %} site-nav__link--has-dropdown{% endif %}"
+          >
+            {{ link.title }}
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              role="presentation"
+              class="icon icon--wide icon-chevron-down"
+              viewBox="0 0 28 16"
+            >
+              <path d="m1.57 1.59 12.76 12.77L27.1 1.59" stroke-width="2" stroke="#000" fill="none"/>
+            </svg>
+          </summary>
+      {% else %}
+        <a
+          href="{{ link.url }}"
+          class="site-nav__link site-nav__link--underline{% if has_dropdown %} site-nav__link--has-dropdown{% endif %}"
+        >
+          {{ link.title }}
+        </a>
+      {% endif %}
+      {%- if is_megamenu -%}
+        {%- assign previous_column_type = '' -%}
+        {%- assign animation_column = 1 -%}
+
+        <div class="site-nav__dropdown megamenu {{ link.title }} text-left">
+          {% capture site_nav %}
+            {% for block in section.blocks %}
+              {% if block.type == 'mega-menu' %}
+                {% assign menu_title = link.title | handleize %}
+                {% assign block_title = block.settings.for_item | handleize %}
+                {% assign text1 = block.settings.text1 %}
+                {% assign url1 = block.settings.url1 %}
+                {% assign text2 = block.settings.text2 %}
+                {% assign url2 = block.settings.url2 %}
+                {% assign text3 = block.settings.text3 %}
+                {% assign url3 = block.settings.url3 %}
+                {% assign text4 = block.settings.text4 %}
+                {% assign url4 = block.settings.url4 %}
+                {% assign text5 = block.settings.text5 %}
+                {% assign url5 = block.settings.url5 %}
+                {% if menu_title == block_title %}
+                  <div class="mega__side-nav">
+                    {% if text1 != blank -%}
+                      <a class="h5" href="{{ url1 }}">{{ text1 }}</a>
+                    {%- endif %}
+                    {% if text2 != blank -%}
+                      <a class="h5"  href="{{ url2 }}">{{ text2 }}</a>
+                    {%- endif %}
+                    {% if text3 != blank -%}
+                      <a class="h5"  href="{{ url3 }}">{{ text3 }}</a>
+                    {%- endif %}
+                    {% if text4 != blank -%}
+                      <a class="h5"  href="{{ url4 }}">{{ text4 }}</a>
+                    {%- endif %}
+                    {% if text5 != blank -%}
+                      <a class="h5"  href="{{ url5 }}">{{ text5 }}</a>
+                    {%- endif %}
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}  
+          {% endcapture %}
+          {% capture mega-img-btn %}
+            {% for block in section.blocks %}
+              {% if block.type == 'mega-menu' %}
+                {% assign menu_title = link.title | handleize %}
+                {% assign block_title = block.settings.for_item | handleize %}
+                {% if menu_title == block_title %}
+                  {% if block.settings.img -%}
+                    <div class="mega_img-btn">                    
+                      {{- block.settings.img | image_url: width: block.settings.img.width | image_tag -}}                    
+                      {% if block.settings.btn_label != blank -%}
+                        <a class="global_btn" href="{{ block.settings.btn_url }}">{{ block.settings.btn_label }}</a>
+                      {%- endif %}
+                    </div>
+                {% endif %}
+                  {%- endif %}
+              {% endif %}
+            {% endfor %}            
+          {% endcapture %}
+          {% capture mega-bottombar %}
+            {% for block in section.blocks %}
+              {% assign menu_title = link.title | handleize %}
+              {% assign block_title = block.settings.for_item | handleize %}
+              {% assign bb_text1 = block.settings.bb_text1 %}
+              {% assign bb_link1 = block.settings.bb_link1 %}
+              {% assign bb_text2 = block.settings.bb_text2 %}
+              {% assign bb_link2 = block.settings.bb_link2 %}
+              {% if block.type == 'mega-menu' %}
+                {% if menu_title == block_title %}
+                  <div class="megamenu__bottombar">
+                    {% if bb_text1 != blank -%}
+                      <a href="{{ bb_link1 }}">{{ bb_text1 }}</a>
+                    {%- endif %}
+                    {% if bb_text2 != blank -%}
+                      <a href="{{ bb_link2 }}">{{ bb_text2 }}</a>
+                    {%- endif %}
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}            
+          {% endcapture %}
+          <div class="page-width">
+            <div class="mega__menu-container">
+              <div class="mega__menu-wrapper">
+                {{ site_nav }}
+                <div class="mega-menu__main_nav_botttombar">
+                  <div class="mega-menu__main_nav grid{% if dropdown_alignment == 'center' %} grid--center{% endif %}">
+                    <div class="grid__item  appear-animation appear-delay-{{ animation_column }}">
+                      {%- assign animation_column = animation_column | plus: 1 -%}
+
+                      {%- for childlink in link.links -%}
+                        {%- liquid
+                          assign create_new_column = false
+
+                          if childlink.levels > 0 and forloop.index != 1
+                            assign create_new_column = true
+                          endif
+
+                          if childlink.levels == 0 and previous_column_type == 'full'
+                            assign create_new_column = true
+                          endif
+                        -%}
+
+                        {%- if create_new_column -%}
+                          </div>
+                          <div class="grid__item  appear-animation appear-delay-{{ animation_column }}">
+                            {%- assign animation_column = animation_column | plus: 1 -%}
+                        {%- endif -%}
+
+                        {%- if childlink.levels > 0 and childlink.url contains '/collections/' -%}
+                          {%- if collections[childlink.object.handle].image != blank
+                            and section.settings.mega_menu_images_
+                          -%}
+                            <a href="{{ childlink.url }}">
+                              <div class="svg-mask svg-mask--landscape">
+                                {%- render 'image-element',
+                                  img: collections[childlink.object.handle].image,
+                                  sizeVariable: '20vw',
+                                  alt: collections[childlink.object.handle].title,
+                                  classes: 'megamenu__collection-image'
+                                -%}
+                              </div>
+                            </a>
+                          {%- endif -%}
+                        {%- endif -%}
+
+                        <div class="h5">
+                          <a
+                            href="{{ childlink.url }}"
+                            class="site-nav__dropdown-link site-nav__dropdown-link--top-level"
+                          >
+                            {{- childlink.title -}}
+                          </a>
+                        </div>
+
+                        {%- liquid
+                          if childlink.levels > 0
+                            assign previous_column_type = 'full'
+                          else
+                            assign previous_column_type = 'single'
+                          endif
+                        -%}
+
+                        {%- for grandchildlink in childlink.links -%}
+                          <div>
+                            <a href="{{ grandchildlink.url }}" class="site-nav__dropdown-link">
+                              {{ grandchildlink.title }}
+                            </a>
+                          </div>
+                        {%- endfor -%}
+                      {%- endfor -%}
+                    </div>
+                    {{ mega-img-btn }}
+                  </div>
+                  {{ mega-bottombar }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- elsif has_dropdown -%}
+        <ul class="site-nav__dropdown text-left">
+          {%- for childlink in link.links -%}
+            {%- liquid
+              assign has_sub_dropdown = false
+              if childlink.links != blank
+                assign has_sub_dropdown = true
+              endif
+            -%}
+
+            <li class="{% if has_sub_dropdown %} site-nav__deep-dropdown-trigger{% endif %}">
+              <a
+                href="{{ childlink.url }}"
+                class="site-nav__dropdown-link site-nav__dropdown-link--second-level{% if has_sub_dropdown %} site-nav__dropdown-link--has-children{% endif %}"
+              >
+                {{ childlink.title | escape }}
+                {%- if has_sub_dropdown -%}
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    role="presentation"
+                    class="icon icon--wide icon-chevron-down"
+                    viewBox="0 0 28 16"
+                  >
+                    <path d="m1.57 1.59 12.76 12.77L27.1 1.59" stroke-width="2" stroke="#000" fill="none"/>
+                  </svg>
+                {%- endif -%}
+              </a>
+              {%- if has_sub_dropdown -%}
+                <ul class="site-nav__deep-dropdown">
+                  {%- for grandchildlink in childlink.links -%}
+                    <li>
+                      <a href="{{ grandchildlink.url }}" class="site-nav__dropdown-link">
+                        {{- grandchildlink.title | escape -}}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {% if is_megamenu or has_dropdown %}
+        </details>
+      {% endif %}
+    </li>
+  {%- endfor -%}
+</ul>

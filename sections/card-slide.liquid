@@ -1,0 +1,287 @@
+{% liquid
+  assign id = section.id
+%}
+
+<style>
+  #shopify-section-{{id}} {
+    box-sizing: border-box;
+    margin-top: {{section.settings.margin_top | append: 'px'}};
+    margin-bottom: {{section.settings.margin_bottom | append: 'px'}};
+    padding-top: {{section.settings.padding_top | append: 'px'}};
+    padding-bottom: {{section.settings.padding_bottom | append: 'px'}};
+  }
+  .wrapper-{{ id }} .card__wrapper {
+    position: relative;
+  }
+   .wrapper-{{ id }} .image_wrap img{
+      aspect-ratio: 1;
+      object-fit: cover;
+     border-top-left-radius: 8px;
+     border-top-right-radius: 8px;
+    }
+  .wrapper-{{ id }} .card__info {
+    padding: 10px;
+    background-color: #ebebeb;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    h4 {
+      text-align: center;
+      margin: 0 0 15px;
+    }
+  }
+  .wrapper-{{ id }} .nav__btn {
+    background: rgb(255, 255, 255);
+    border: none;
+    border-radius: 50%;
+    color: rgb(41, 41, 41);
+    position: absolute;
+    box-shadow: rgba(0, 0, 0, 0.333) 2px 2px 10px;
+    height: 40px;
+    width: 40px;
+    transform: translateY(-50%);
+    top: 50%;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .prev-{{ section.id }} {
+    left: 8px;
+  }
+  .next-{{ section.id }} {
+    right: 8px;
+  }
+  .next-{{ section.id }}.swiper-button-disabled, .prev-{{ section.id }}.swiper-button-disabled {
+    display: none;
+  }
+  @media(max-width: 600px) {
+    #shopify-section-{{id}} {
+      margin-top: {{section.settings.margin_top_m | append: 'px'}};
+      margin-bottom: {{section.settings.margin_bottom_m | append: 'px'}};
+      padding-top: {{section.settings.padding_top_m | append: 'px'}};
+      padding-bottom: {{section.settings.padding_bottom_m | append: 'px'}};
+    }
+  }
+</style>
+
+<div class="sec-{{ id }}">
+  <div class="{% unless section.settings.full_width %}page-width{% endunless %}">
+    <div class="wrapper-{{ id }}">
+      <div class="swiper">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            <div class="swiper-slide">
+              <div class="card__wrapper">
+                {% if block.settings.image != blank %}
+                  <div class="image_wrap">
+                    {{ block.settings.image | image_url: width: block.settings.image.width | image_tag }}
+                  </div>
+                {% else %}
+                  <div class="image_wrap">
+                    {{ 'image' | placeholder_svg_tag }}
+                  </div>
+                {% endif %}
+                <div class="card__info">
+                  {% if block.settings.title != blank %}
+                    <h4>{{ block.settings.title }}</h4>
+                  {% endif %}
+                  {% if block.settings.btn_label != blank -%}
+                    <a class="global_btn solid" href="{{ block.settings.btn_url }}">{{ block.settings.btn_label }}</a>
+                  {%- endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        {% if section.settings.show_arrow %}
+          <div class="prev-{{ section.id }} nav__btn">
+            {% render 'all-icons', name: 'left_arrow' %}
+          </div>
+          <div class="next-{{ section.id }} nav__btn">
+            {% render 'all-icons', name: 'right_arrow' %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Swiper(".wrapper-{{ id }} .swiper", {
+      slidesPerView: 1,
+      spaceBetween: 0,
+      autoHeight: true,
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 20,
+        },
+        1200: {
+          slidesPerView: 5,
+          spaceBetween: 20,
+        },
+      },
+      navigation: {
+        nextEl: '.next-{{ section.id }}',
+        prevEl: '.prev-{{ section.id }}'
+      },
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Card Slide",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full Width Section",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrow",
+      "label": "Show Arrow",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing Desktop"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing Mobile"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "Title",
+          "default": "Limited Time Only"
+        },
+        {
+          "type": "text",
+          "id": "btn_label",
+          "label": "Button Label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "btn_url",
+          "label": "Button Url"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Card Slide",
+      "blocks": [
+        {"type": "card"},
+        {"type": "card"},
+        {"type": "card"},
+        {"type": "card"},
+        {"type": "card"},
+      ]
+    }
+  ]
+}
+{% endschema %}

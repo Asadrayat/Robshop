@@ -1,0 +1,222 @@
+.custom__main-collection {
+  .grid.grid--uniform .grid__item {
+    padding-left: 17px;
+  }
+}
+@media (min-width: 768px) {
+  .custom__main-collection {
+    .grid__item {
+      padding-left: 0;
+    }
+    .filter-form {
+      display: flex;
+      justify-content: start;
+      gap: 10px;
+    }
+    .filter-form > div {
+      width: 100%;
+    }
+    .collection-filter__item select {
+      padding: 6px 22%;
+      background-color: #fff;
+      max-width: 100%;
+      /* margin: 0 0 10px 0; */
+      border-radius: 4px;
+      width: 100%;
+      border: none;
+      line-height: 120%;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      color: #292929;
+      font-weight: 600;
+      /* padding: var(--ns-space-2) 8% var(--ns-space-2) 22%; */
+      background-image: url("https://cdn.shopify.com/s/files/1/0804/7539/0266/files/download.svg?v=1742190794");
+      background-position: 95%;
+      background-size: 12px;
+      background-repeat: no-repeat;
+      background-color: var(--ns-color-white);
+    }
+    .collection-grid__wrapper {
+      position: relative;
+    }
+    .cg-filter__wrapper > div {
+      width: 100%;
+      overflow: visible;
+    }
+    .cg-filter__wrap {
+      position: sticky;
+      top: 100px;
+      left: 0;
+      background: #fff;
+      z-index: 3;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 10px;
+      padding-left: 17px;
+      padding-block: 15px;
+    }
+    .cg-filter__wrapper {
+      flex: 0 0 calc((100% - (100% / 6)) - 5px);
+    }
+    .cg-filter__wrapper .collapsible-content__inner ul {
+      max-height: 200px;
+      overflow-y: auto;
+      scrollbar-color: #272727 #f1f1f1;
+      scrollbar-width: thin;
+      overflow-x: hidden;
+    }
+    .collection-filter__item--sort {
+      flex: 0 0 calc((100% / 6) - 5px);
+      margin-bottom: 0px;
+    }
+    .collection-sidebar {
+      padding-right: 0px;
+      margin-bottom: 0;
+    }
+    .collection-sidebar__group {
+      padding: 6px 10px;
+      background-color: #e5e5e5;
+      border-radius: 4px;
+      max-width: 100%;
+      width: 100%;
+      border: none;
+      line-height: 150%;
+      position: relative;
+      overflow: visible;
+      button {
+        padding: 0;
+        line-height: 130%;
+        font-size: 10px;
+        letter-spacing: 0;
+        color: #292929;
+        font-weight: 600;
+      }
+    }
+    .collection-sidebar__group {
+      padding-top: 6px;
+    }
+    .collection-sidebar__group .collapsible-content__inner {
+      min-width: calc(100% + 170px);
+      background: #fff;
+      padding: 20px;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      -moz-border-radius: 8px;
+      -webkit-border-radius: 8px;
+      border-radius: 8px;
+      -ms-box-shadow: 0 0 6px rgba(0, 0, 0, 0.12);
+      -webkit-box-shadow: 0 0 6px rgb(0 0 0 / 12%);
+      box-shadow: 0 0 6px #0000001f;
+      z-index: 2;
+      margin-top: 5px;
+    }
+    .collection-sidebar__group .collapsible-content__inner::after {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: 20px;
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      -ms-box-shadow: -2px -2px 6px rgba(0, 0, 0, 0.12);
+      -webkit-box-shadow: -2px -2px 6px rgb(0 0 0 / 12%);
+      box-shadow: -2px -2px 6px #0000001f;
+      -ms-transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+    .collection-sidebar__group svg path {
+      fill: #000;
+    }
+    .filter-form div:first-of-type .collection-sidebar__group {
+      padding-top: 6px;
+    }
+  }
+  .collection-filter__item--drawer-wrap {
+    display: none;
+  }
+  .filter-form
+    .collection-sidebar__group
+    .collapsible-content--sidebar.is-open {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    height: max-content !important;
+    overflow: visible;
+  }
+}
+@media (max-width: 768px) {
+  .custom__main-collection {
+    max-width: 100vw;
+    overflow: hidden;
+    .page-full,
+    .page-width {
+      padding: 0;
+      padding-right: 17px;
+    }
+    .drawer__header {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      align-items: center;
+    }
+    .drawer__header button {
+      padding: 0;
+      right: 0;
+    }
+    .drawer__header .h2 {
+      font-size: 13px;
+      line-height: normal;
+      margin: 0;
+      letter-spacing: 1.2px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .collection-sidebar__group button {
+      font-size: 10px;
+      line-height: normal;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+  }
+  .cg-filter__wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .collection-filter__item--drawer {
+    flex: 0 0 50%;
+  }
+  .collection-filter__item--sort {
+    flex: 0 0 45%;
+  }
+  .cg-filter__wrap select {
+    border: 0;
+    font-size: 12px !important;
+    font-weight: 600;
+    background-image: url("https://cdn.shopify.com/s/files/1/0804/7539/0266/files/download.svg?v=1742190794");
+    background-position: 90%;
+    background-size: 12px;
+    background-repeat: no-repeat;
+    text-transform: uppercase;
+    letter-spacing: 0;
+  }
+  .collection-filter__item--drawer button {
+    width: 100%;
+    border: 0;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    font-size: 12px;
+    line-height: normal;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+  .collection-sidebar__group .collapsible-trigger__icon path {
+    fill: #000;
+  }
+}

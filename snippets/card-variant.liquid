@@ -1,0 +1,24 @@
+{% for variant in product.variants %}
+  {% assign size = '' %}
+  {% for option in product.options %}
+    {% if option == 'Size' or option == 'Taille' or option == 'Dimension' or option == 'Format' %}
+      {% assign size = variant.options[forloop.index0] %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+  {% if product.has_only_default_variant %}
+    <a class="atc w-full" href="{{ variant.url }}" data-variant="{{ variant.id }}">
+      {{ 'Add To Cart' }}
+    </a>
+  {% else %}
+    {% if variant.available %}
+      <a class="variant-size --variant-size" href="{{ variant.url }}" data-variant="{{ variant.id }}">
+        {{ size }}
+      </a>
+    {% else %}
+      <a class="variant-size qa__variant-disabled" data-variant="{{ variant.id }}">
+        {{ size }}
+      </a>
+    {% endif %}
+  {% endif %}
+{% endfor %}

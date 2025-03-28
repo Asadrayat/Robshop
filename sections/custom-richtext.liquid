@@ -1,0 +1,224 @@
+{% liquid
+  assign id = section.id
+%}
+
+<style>
+  #shopify-section-{{id}} {
+    box-sizing: border-box;
+    margin-top: {{section.settings.margin_top | append: 'px'}};
+    margin-bottom: {{section.settings.margin_bottom | append: 'px'}};
+    padding-top: {{section.settings.padding_top | append: 'px'}};
+    padding-bottom: {{section.settings.padding_bottom | append: 'px'}};
+  }
+  .hidden_smooth {
+    max-height: 0;
+    opacity: 0;
+    line-height: 0;
+    transition: max-height 0.4s ease-in-out;
+  }
+  .wrapper-{{ id }} {
+    padding: 0 15px;
+  }
+  .wrapper-{{ id }} .custom_richtext *{
+    font-size: 12px;
+    color: #292929;
+  }
+  button.readmorebtn {
+    padding: 0;
+    position: relative;
+    font-size: 13ox;
+    line-height: 17px;
+  }
+  button.readmorebtn::before {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #29292926;
+  }
+  button.readmorebtn::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: #000;
+    transition: all 0.4s;
+  }
+  button.readmorebtn:hover::after {
+    width: 100%;
+  }
+  .wrapper-{{ id }} .custom_richtext {
+     h1{
+        font-size: 14px;
+        margin-bottom: 25px;
+      }
+      h2 {
+        font-size: 14px;
+        margin-block: 60px 25px;
+      }
+    }
+  @media(max-width: 600px) {
+    #shopify-section-{{id}} {
+      margin-top: {{section.settings.margin_top_m | append: 'px'}};
+      margin-bottom: {{section.settings.margin_bottom_m | append: 'px'}};
+      padding-top: {{section.settings.padding_top_m | append: 'px'}};
+      padding-bottom: {{section.settings.padding_bottom_m | append: 'px'}};
+    }
+  }
+</style>
+{% if section.settings.rte != blank %}
+  <div class="sec-{{ id }}">
+    <div class="{% unless section.settings.full_width %}page-width{% endunless %}">
+      <div class="wrapper-{{ id }}">
+        {% assign richtext = section.settings.rte | strip %}
+        {% assign number = section.settings.number %}
+        <div class="custom_richtext short">{{ richtext | truncatewords: number | append: '...' }}</div>
+        <div class="custom_richtext full hidden_smooth">{{ richtext }}</div>
+        <button class="readmorebtn" data-readmore>Read more</button>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    const readmoreBtn = document.querySelector("[data-readmore]");
+    const shortText = document.querySelector(".custom_richtext.short");
+    const fullText = document.querySelector(".custom_richtext.full");
+
+    readmoreBtn.addEventListener("click", function(){
+      if (shortText.classList.contains("hidden_smooth")) {
+        shortText.classList.remove("hidden_smooth");
+        fullText.classList.add("hidden_smooth");
+        this.innerText = "Read more";
+      } else {
+        shortText.classList.add("hidden_smooth");
+        fullText.classList.remove("hidden_smooth");
+        this.innerText = "Read less";
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Custom Richtext",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full Width Section",
+      "default": false
+    },
+    {
+      "type": "richtext",
+      "id": "rte",
+      "label": "Richtext"
+    },
+    {
+      "type": "number",
+      "id": "number",
+      "label": "Words to show",
+      "default": 76,
+      "info": "Select number of words to display initially"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing Desktop"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing Mobile"
+    },
+    {
+      "type": "range",
+      "id": "margin_top_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Margin Bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_m",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Richtext"
+    }
+  ]
+}
+{% endschema %}
